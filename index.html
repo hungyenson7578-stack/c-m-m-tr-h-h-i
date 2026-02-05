@@ -607,25 +607,28 @@
         // Chạy 1 lần ngay lúc đầu để hiện các phần tử đầu trang
         checkScroll();
     });
-        // Hiển thị nút khi cuộn chuột xuống 300px
+// Hiển thị nút khi cuộn chuột xuống 300px
 window.addEventListener('scroll', function() {
     var btn = document.getElementById("backToTop");
-    if (window.pageYOffset > 300) {
-        btn.style.display = "block";
-    } else {
-        btn.style.display = "none";
+    if (btn) { // Kiểm tra nếu nút tồn tại mới chạy
+        if (window.pageYOffset > 300) {
+            btn.style.display = "block";
+        } else {
+            btn.style.display = "none";
+        }
     }
 });
 
-// Xử lý cuộn lên đầu trang mượt mà
-document.getElementById("backToTop").onclick = function() {
+// Hàm xử lý cuộn lên đầu trang
+function quayVeDauTrang() {
     window.scrollTo({
         top: 0,
         behavior: 'smooth'
     });
-};
+}
 </script>
-  <button id="backToTop" title="Lên đầu trang">
+
+<button id="backToTop" onclick="quayVeDauTrang()" title="Lên đầu trang">
     <span class="mobi-mbri mobi-mbri-arrow-up"></span>
 </button>
 </body>
