@@ -38,65 +38,88 @@
 
 <style>
     /* CSS cho màn hình che */
-    #intro-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: #edf5e1; /* Màu nền kem xanh nhạt giống web của bạn */
-        z-index: 99999; /* Đảm bảo che hết mọi thứ, kể cả menu */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        transition: opacity 0.8s ease, visibility 1s ease; /* Hiệu ứng mờ dần */
-    }
+   /* CSS cho màn hình che đã tối ưu */
+#intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #edf5e1; /* Màu nền kem xanh nhạt */
+    z-index: 99999; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.6s ease; /* Làm mờ nhanh hơn chút */
+}
 
-    .intro-content {
-        text-align: center;
-        padding: 40px;
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Đổ bóng cho đẹp */
-        max-width: 90%;
-    }
+/* Class này dùng để ẩn overlay và cho phép bấm xuyên qua */
+.overlay-hidden {
+    opacity: 0 !important;
+    pointer-events: none !important; 
+}
 
-    /* CSS cho nút Bắt đầu */
-    #start-btn {
-        background: linear-gradient(135deg, #7aa23f, #9bcf53); /* Màu xanh cốm */
-        color: white;
-        border: none;
-        padding: 15px 40px;
-        font-size: 20px;
-        font-weight: bold;
-        border-radius: 50px;
-        cursor: pointer;
-        margin-top: 20px;
-        transition: transform 1s, box-shadow 1s;
-    }
+.intro-content {
+    text-align: center;
+    padding: 40px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    max-width: 90%;
+}
 
-    #start-btn:hover {
-        transform: scale(1.05); /* Phóng to nhẹ khi di chuột */
-        box-shadow: 0 5px 15px rgba(122, 162, 63, 0.4);
-    }
+#start-btn {
+    background: linear-gradient(135deg, #7aa23f, #9bcf53);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: transform 0.3s;
+}
+
+#start-btn:hover {
+    transform: scale(1.05);
+}
 </style>
 
 <script>
-    // JS xử lý sự kiện click
     document.addEventListener("DOMContentLoaded", function() {
         var startButton = document.getElementById('start-btn');
         var overlay = document.getElementById('intro-overlay');
 
-        startButton.addEventListener('click', function() {
-            // 1. Làm mờ overlay
-            overlay.style.opacity = '0';
-            
-            // 2. Ẩn hẳn overlay sau khi hiệu ứng mờ kết thúc (0.8 giây)
-            setTimeout(function() {
-                overlay.style.visibility = 'hidden';
-                // Tùy chọn: Cho phép cuộn trang trở lại (nếu bạn muốn khóa cuộn lúc đầu)
+        // Hàm xử lý ẩn màn hình chờ
+        function hideOverlay() {
+            if (overlay) {
+                overlay.classList.add('overlay-hidden');
                 document.body.style.overflow = 'auto';
-            }, 800);
+                // Lưu vào bộ nhớ trình duyệt để không hiện lại khi chuyển mục
+                sessionStorage.setItem('hasVisited', 'true');
+            }
+        }
+
+        // 1. Kiểm tra nếu đã nhấn Bắt đầu trước đó trong phiên làm việc này
+        if (sessionStorage.getItem('hasVisited') === 'true') {
+            if (overlay) overlay.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // 2. Click nút Bắt đầu
+        if (startButton) {
+            startButton.addEventListener('click', function() {
+                hideOverlay();
+            });
+        }
+
+        // 3. FIX LỖI MENU: Nếu nhấn vào các mục trên thanh điều hướng, ẩn luôn màn hình chờ
+        var menuLinks = document.querySelectorAll('.nav-link, .btn');
+        menuLinks.forEach(function(link) {
+            link.addEventListener('click', function() {
+                hideOverlay();
+            });
         });
     });
 </script>
